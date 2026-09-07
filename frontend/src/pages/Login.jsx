@@ -5,6 +5,7 @@ import { login, reset } from "../features/auth/authSlice";
 
 import toast from "react-hot-toast";
 import Loading from "../components/Loading";
+import PasswordInput from "../components/PasswordInput";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -69,15 +70,14 @@ function Login() {
             onChange={onChange}
             className="input input-bordered w-full max-w-xs"
           />
-          <input
+          <PasswordInput
             required
-            type="password"
             id="password"
             name="password"
             placeholder="Enter your password"
+            autoComplete="current-password"
             value={password}
             onChange={onChange}
-            className="input input-bordered w-full max-w-xs"
           />
           <button type="submit" className="btn w-full btn-primary">
             Login

@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { register, reset } from "../features/auth/authSlice";
 import toast from "react-hot-toast";
 import Loading from "../components/Loading";
+import PasswordInput from "../components/PasswordInput";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -83,22 +84,20 @@ function Register() {
             placeholder="Enter your email"
             onChange={onChange}
           />
-          <input
-            type="password"
-            className="input input-bordered w-full max-w-xs"
+          <PasswordInput
             id="password"
             name="password"
             value={password}
             placeholder="Enter your password"
+            autoComplete="new-password"
             onChange={onChange}
           />
-          <input
-            type="password"
-            className="input input-bordered w-full max-w-xs"
+          <PasswordInput
             id="password2"
             name="password2"
             value={password2}
             placeholder="Confirm your password"
+            autoComplete="new-password"
             onChange={onChange}
           />
           <button type="submit" className="btn w-full btn-primary">
