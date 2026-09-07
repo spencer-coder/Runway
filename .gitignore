@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+frontend/dist/
+frontend/dev-dist/
+
+# Environment / secrets
+.env
+.env.local
+
+# User-uploaded files (runtime data, not source)
+uploads/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
