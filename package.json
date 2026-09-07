@@ -5,7 +5,7 @@
   "main": "backend/server.js",
   "scripts": {
     "dev": "concurrently --names \"SERVER,CLIENT\" --prefix \"[{name}]\" --prefix-colors \"yellow,blue\" \"npm run server\" \"npm run client\"",
-    "build": "cd frontend && npm install && npm run build",
+    "build": "cd frontend && npm install --include=dev && npm run build",
     "format": "prettier --write \"frontend/**/*.{js,jsx,css,md,json}\" && prettier --write \"backend/**/*.{js,json}\"",
     "client": "npm run dev --prefix frontend",
     "server": "nodemon --ext js,json backend/server.js",
