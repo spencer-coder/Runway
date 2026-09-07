@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   removeProfilePicture,
@@ -20,7 +20,6 @@ function UserProfile() {
   const { settings } = useSelector((state) => state.settings);
   const { budget } = useSelector((state) => state.budget);
   const [name, setName] = useState(user?.name || "");
-  const [selectedCurrency, setSelectedCurrency] = useState(settings.currency || "USD");
   const [budgetInput, setBudgetInput] = useState("");
 
   const n = useNavigate();
@@ -90,19 +89,32 @@ function UserProfile() {
     dispatch(removeProfilePicture());
   };
 
-  const currencies = Intl.supportedValuesOf("currency");
-
-  const displayNames = new Intl.DisplayNames([navigator.language], {
-    type: "currency",
-  });
+  // Built once: the engine ships every ISO 4217 code and its name in the
+  // viewer's language, so there is no list to maintain and no API to call.
+  // Sorted by name rather than code, since that is the order someone scanning
+  // 160-odd options is reading in.
+  const currencies = useMemo(() => {
+    let codes;
+    try {
+      codes = Intl.supportedValuesOf("currency");
+    } catch {
+      // supportedValuesOf is ES2022 and this runs during render, so an older
+      // browser would take the whole page down rather than degrade.
+      return [{ code: "USD", name: "US Dollar" }];
+    }
+    const displayNames = new Intl.DisplayNames([navigator.language], {
+      type: "currency",
+    });
+    return codes
+      .map((code) => ({ code, name: displayNames.of(code) }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, []);
 
   const onCurrencyChange = (e) => {
-    const newCurrency = e.target.value;
-    setSelectedCurrency(newCurrency);
     dispatch(
       updateSettings({
         ...settings,
-        currency: newCurrency,
+        currency: e.target.value,
       }),
     );
   };
@@ -155,18 +167,14 @@ function UserProfile() {
             <label className="block text-sm font-medium mb-1">Currency</label>
             <select
               className="select select-bordered w-full"
-              value={selectedCurrency}
+              value={settings.currency || "USD"}
               onChange={onCurrencyChange}
             >
-              {/* TODO: sort currencies by name not by code */}
-              {currencies.sort().map((currency) => {
-                const displayName = displayNames.of(currency);
-                return (
-                  <option key={currency} value={currency}>
-                    {currency} {displayName}
-                  </option>
-                );
-              })}
+              {currencies.map(({ code, name }) => (
+                <option key={code} value={code}>
+                  {name} ({code})
+                </option>
+              ))}
             </select>
           </div>
         </div>
